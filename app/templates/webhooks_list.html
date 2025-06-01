@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Webhooks – HookBox{% endblock %}
+{% block content %}
+<div class="list-header">
+    <h2>Captured Webhooks (Page {{ page }})</h2>
+    <a href="/webhooks?page={{ page }}" class="refresh-btn">Refresh</a>
+</div>
+
+<div class="table-responsive">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Method</th>
+                <th>Path</th>
+                <th>Received</th>
+                <th>Preview</th>
+            </tr>
+        </thead>
+        <tbody id="webhook-table">
+            {% for wh in webhooks %}
+            <tr hx-get="/webhooks/{{ wh.id }}" hx-target="#detail-view" hx-swap="innerHTML" class="webhook-row">
+                <td class="mono">{{ wh.id }}</td>
+                <td><span class="badge {{ wh.method }}">{{ wh.method }}</span></td>
+                <td class="mono">{{ wh.path }}</td>
+                <td>{{ wh.received_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td class="preview">{{ wh.body[:50].decode('utf-8', 'ignore') if wh.body else '' }}...</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="empty">No webhooks received yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="pagination">
+    {% if page > 1 %}
+    <a href="/webhooks?page={{ page - 1 }}" class="button">Previous</a>
+    {% endif %}
+    {% if has_next %}
+    <a href="/webhooks?page={{ page + 1 }}" class="button">Next</a>
+    {% endif %}
+</div>
+
+<hr>
+<div id="detail-view">
+    <p class="placeholder-text">Click a row above to view details.</p>
+</div>
+{% endblock %}

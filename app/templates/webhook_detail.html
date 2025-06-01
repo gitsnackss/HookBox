@@ -1,0 +1,48 @@
+<div class="detail-card">
+    <div class="detail-header">
+        <h3>Webhook {{ webhook.id }}</h3>
+        <span class="timestamp">{{ webhook.received_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}</span>
+    </div>
+
+    <div class="metadata-grid">
+        <div class="meta-item">
+            <strong>Method</strong>
+            <span class="badge {{ webhook.method }}">{{ webhook.method }}</span>
+        </div>
+        <div class="meta-item">
+            <strong>Path</strong>
+            <code>{{ webhook.path }}</code>
+        </div>
+        <div class="meta-item">
+            <strong>Source IP</strong>
+            <code>{{ webhook.source_ip or 'Unknown' }}</code>
+        </div>
+    </div>
+
+    <h4>Headers</h4>
+    <pre class="headers-box">{{ webhook.headers }}</pre>
+
+    <h4>Body</h4>
+    <pre
+        class="body-box">{% if webhook.body %}{{ webhook.body.decode('utf-8', 'replace') }}{% else %}<em>No body content</em>{% endif %}</pre>
+
+    <hr>
+    <h4>Replay Webhook</h4>
+    <form hx-post="/api/v1/webhooks/{{ webhook.id }}/replay" hx-trigger="submit" hx-target="#replay-result"
+        hx-swap="innerHTML" class="replay-form">
+        <!-- Note: In a real app we need the API key or session context. 
+             This is a simplified dashboard that might fail if API auth is enforced strictly 
+             without a browser session cookie proxy. -->
+        <div class="form-group">
+            <label>Target URL</label>
+            <input type="url" name="target_url" placeholder="https://example.com/api/webhook" required>
+        </div>
+        <div class="form-row">
+            <label><input type="checkbox" name="include_original_headers" checked> Send original headers</label>
+            <label>Timeout: <input type="number" name="timeout_seconds" value="10" min="1" max="30"
+                    class="small-input">s</label>
+        </div>
+        <button type="submit" class="btn-primary">Replay Webhook</button>
+    </form>
+    <div id="replay-result"></div>
+</div>
