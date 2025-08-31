@@ -32,7 +32,7 @@ def get_current_project(
     return project
 
 def verify_admin_key(authorization: AuthorizationDep) -> bool:
-    """Validate admin API key."""
+    """Validate admin API key using bcrypt constant-time comparison."""
     from app.config import settings
 
     if not authorization.startswith("Bearer "):
@@ -41,7 +41,7 @@ def verify_admin_key(authorization: AuthorizationDep) -> bool:
             detail="Invalid Authorization header format",
         )
     api_key = authorization.replace("Bearer ", "")
-    if api_key != settings.admin_api_key:
+    if not settings.validate_admin_key(api_key):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Invalid admin API key",
@@ -50,4 +50,5 @@ def verify_admin_key(authorization: AuthorizationDep) -> bool:
 
 ProjectDep = Annotated[Project, Depends(get_current_project)]
 AdminAuthDep = Annotated[bool, Depends(verify_admin_key)]
+
 

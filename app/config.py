@@ -2,7 +2,7 @@
 from typing import List
 
 import bcrypt
-from pydantic import Field, field_validator
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -32,4 +32,5 @@ class Settings(BaseSettings):
             return False
 
 settings = Settings()
+
 
