@@ -29,21 +29,27 @@ def validate_replay_target(url: str, allowed_domains: List[str]) -> Tuple[bool, 
     if not hostname:
         return False, "Invalid hostname"
 
-    # Resolve IP and block private ranges
-    try:
-        ip = socket.gethostbyname(hostname)
-        if is_private_ip(ip):
-            return False, f"Target resolves to private IP: {ip}"
-    except socket.gaierror:
-        return False, "Hostname resolution failed"
-
-    # Domain allowlist (wildcard patterns)
+    # 1. CHECK DOMAIN WHITELIST FIRST (prevents DNS rebinding)
     if allowed_domains:
+        domain_allowed = False
         for pattern in allowed_domains:
             regex = "^" + re.escape(pattern).replace("\\*", ".*") + "$"
             if re.match(regex, hostname):
+                domain_allowed = True
                 break
-        else:
+        if not domain_allowed:
             return False, "Domain not in allowlist"
 
+    # 2. THEN resolve and check private IPs
+    try:
+        addr_info = socket.getaddrinfo(hostname, None, 0, socket.SOCK_STREAM)
+        for family, socktype, proto, canonname, sockaddr in addr_info:
+            ip_str = sockaddr[0]
+            if is_private_ip(ip_str):
+                return False, "Target resolves to private IP (blocked)"
+    except socket.gaierror:
+        return False, "Hostname resolution failed"
+
     return True, "OK"
+
+

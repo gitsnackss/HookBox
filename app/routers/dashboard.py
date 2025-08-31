@@ -63,3 +63,4 @@ def webhook_detail_html(
         "webhook_detail.html",
         {"request": request, "webhook": webhook},
     )
+

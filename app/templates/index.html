@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HookBox - Webhook Inbox & Replay</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 { color: #2c3e50; }
+        .api-docs { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1> HookBox - Webhook Inbox & Replay</h1>
+    <p>Capture, inspect, and replay webhooks with ease.</p>
+    
+    <div class="api-docs">
+        <h2>API Documentation</h2>
+        <p><strong>Interactive API Docs:</strong> <a href="/docs">Swagger UI</a> | <a href="/redoc">ReDoc</a></p>
+        
+        <h3>Quick Start</h3>
+        <ol>
+            <li>Set your <code>ADMIN_API_KEY_HASH</code> in <code>.env</code></li>
+            <li>Run <code>python scripts/init_db.py</code> to create your first project</li>
+            <li>Use the generated API key and inbox key</li>
+        </ol>
+        
+        <h3>Core Endpoints</h3>
+        <ul>
+            <li><code>POST /i/{project_key}</code> - Ingest webhook</li>
+            <li><code>GET /api/v1/projects/{id}/webhooks</code> - List webhooks (requires auth)</li>
+            <li><code>GET /api/v1/webhooks/{id}</code> - Get webhook detail (requires auth)</li>
+            <li><code>POST /api/v1/webhooks/{id}/replay</code> - Replay webhook (requires auth)</li>
+            <li><code>POST /api/v1/projects</code> - Create project (requires admin key)</li>
+        </ul>
+        
+        <p><strong>Auth:</strong> Use <code>Authorization: Bearer &lt;api_key&gt;</code> header for all protected endpoints.</p>
+    </div>
+</body>
+</html>

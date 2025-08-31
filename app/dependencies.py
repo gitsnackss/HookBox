@@ -50,3 +50,4 @@ def verify_admin_key(authorization: AuthorizationDep) -> bool:
 
 ProjectDep = Annotated[Project, Depends(get_current_project)]
 AdminAuthDep = Annotated[bool, Depends(verify_admin_key)]
+

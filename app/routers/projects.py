@@ -26,14 +26,15 @@ def create_project(
 
     # Create project
     # Note: Allowed domains stored as comma-separated string for simplicity in MVP SQLite
-    allowed_domains_str = ",".join(payload.allowed_replay_domains or []) if payload.allowed_replay_domains else None
+    import json
+    allowed_domains_json = json.dumps(payload.allowed_replay_domains or [])
 
     project = Project(
         id=project_id,
         name=payload.name,
         inbox_key=inbox_key,
         api_key_hash=api_key_hash,
-        allowed_replay_domains=allowed_domains_str,
+        allowed_replay_domains=allowed_domains_json,
     )
     db.add(project)
     db.commit()
@@ -49,3 +50,4 @@ def create_project(
         created_at=project.created_at.isoformat(),
         updated_at=project.updated_at.isoformat(),
     )
+

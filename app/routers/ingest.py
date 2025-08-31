@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Request, HTTPException, status, Depends
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.dependencies import DatabaseDep
 from app.models.project import Project
 from app.services.webhook_service import store_webhook
@@ -34,8 +35,9 @@ async def ingest_webhook(
         method=request.method,
         path=str(request.url.path),
         headers=dict(request.headers),
-        body=body,
+        body=bytes(body),
         source_ip=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
     )
     return {"id": webhook.id, "received_at": webhook.received_at.isoformat()}
+
