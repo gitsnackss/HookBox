@@ -1,5 +1,5 @@
 [tool.setuptools]
-provide-packages = ["app"]
+packages = ["app"]
 
 [build-system]
 requires = ["setuptools>=68.0"]
