@@ -12,6 +12,10 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10", "3.11"]
+    env:
+      SECRET_KEY: "test-secret-key-ci-only"
+      ADMIN_API_KEY_HASH: "$2b$12$R9h7cIPz0gi.URNNX3kh2OPST9/PgBkqquzi.Ee6IvxjiWhAy/LLm"
+      DATABASE_URL: "sqlite:///:memory:"
     
     steps:
       - uses: actions/checkout@v4
@@ -33,13 +37,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
-          pip install types-requests types-urllib3 types-jinja2
 
       - name: Lint with ruff
         run: ruff check .
 
       - name: Type check with mypy
-        run: mypy app --install-types --non-interactive
+        run: mypy app --install-types --non-interactive --no-error-summary
 
       - name: Run tests with coverage
         run: pytest --cov=app --cov-report=xml --cov-report=term-missing
